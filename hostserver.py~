@@ -1,0 +1,93 @@
+import socket               # Import socket module
+from Tkinter import *
+
+
+
+
+if __name__ == '__main__':
+
+
+    s = socket.socket()         # Create a socket object
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
+
+
+    # host = socket.gethostname() # Get local machine name
+    count=1
+    port = 12345                # Reserve a port for your service.
+    s.bind(('localhost', port))
+
+    s.listen(5)                 # Now wait for client connection.
+    while True:
+        c, addr = s.accept()     # Establish connection with client.
+        print 'Got connection from', addr
+
+        # c.send('Thank you for connecting')
+        count+=1
+        c.send(str(count))
+
+        word=c.recv(1024)
+
+
+        file=open("%s.py"%count,"w")
+
+        file.write(word)
+        file.close()
+
+
+
+
+
+
+
+
+        #c.send(ans)
+        c.close()
+
+
+
+
+
+
+
+
+
+        import paramiko
+
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+
+        ssh.connect('192.168.56.101', username='chetan19', password='ggmu')
+        stdin, stdout, ssh_stderr = ssh.exec_command('python %s.py'%count)
+        #stdin, stdout, ssh_stderr = ssh.exec_command('ls')
+
+
+        # print stdin
+        # print stdout
+        while not stdout.channel.exit_status_ready():
+            print stdout.channel.recv(1024)
+
+
+
+
+        #
+        # root = Tk()
+        #
+        # ans="true"
+        # label1 = Label( root, text=ans)
+        #
+        #
+        # label1.pack()
+        #
+        # root.mainloop()
+
+
+
+
+
+
+
+
+
+
+
